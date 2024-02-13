@@ -13,5 +13,17 @@
         <maven.compiler.target>20</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
+    <dependencies>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.0</version>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>postgresql</id>
+            <url>https://jdbc.postgresql.org/download</url>
+        </repository>
+    </repositories>
 </project>

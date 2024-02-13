@@ -14,6 +14,16 @@ public class JdbcRunner {
         List<Long> result = getTicketsByCost(cost);
         System.out.println(result);
     }
+
+    private static void checkMetaData() throws SQLException {
+        try(Connection connection = ConnectionManager.open()){
+            DatabaseMetaData metaData = connection.getMetaData();
+            ResultSet catalogs = metaData.getCatalogs();
+            while (catalogs.next()){
+                
+            }
+        }
+    }
     private static List<Long> getTicketsByCost(Long cost) throws SQLException{
         String sql= """
                 SELECT id
@@ -25,6 +35,9 @@ public class JdbcRunner {
         PreparedStatement prepareStatement = connection.prepareStatement(sql)){
             prepareStatement.setLong(1,cost);
             ResultSet resultSet=prepareStatement.executeQuery();
+            prepareStatement.setFetchSize(50);
+            prepareStatement.setQueryTimeout(10);
+            prepareStatement.setMaxRows(100);
             while (resultSet.next()){
                 result.add(resultSet.getObject("id",Long.class));
             }
