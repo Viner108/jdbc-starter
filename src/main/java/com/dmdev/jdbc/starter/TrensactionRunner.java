@@ -17,7 +17,7 @@ public class TrensactionRunner {
 //        PreparedStatement deleteAuthorStatement=null;
         Statement statement =null;
         try{
-            connection= ConnectionManager.open();
+            connection= ConnectionManager.get();
             connection.setAutoCommit(false);
 
             statement = connection.createStatement();
