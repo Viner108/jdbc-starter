@@ -10,9 +10,10 @@ import java.util.Locale;
 
 public class JdbcRunner {
     public static void main(String[] args) throws SQLException {
-        Long cost = 200L;
-        List<Long> result = getTicketsByCost(cost);
-        System.out.println(result);
+//        Long cost = 200L;
+//        List<Long> result = getTicketsByCost(cost);
+//        System.out.println(result);
+        checkMetaData();
     }
 
     private static void checkMetaData() throws SQLException {
@@ -20,7 +21,21 @@ public class JdbcRunner {
             DatabaseMetaData metaData = connection.getMetaData();
             ResultSet catalogs = metaData.getCatalogs();
             while (catalogs.next()){
-                
+                String catalog = catalogs.getString(1);
+                ResultSet schemas = metaData.getSchemas();
+                while (schemas.next()){
+                    String schema = schemas.getString("TABLE_SCHEM");
+                    ResultSet tables = metaData.getTables(catalog, schema, "%", new String[]{"TABLE"});
+                    if(schema.equals("public")) {
+                        while (tables.next()) {
+                            System.out.println(tables.getString("TABLE_NAME"));
+                            ResultSet columns = metaData.getColumns(catalog, schema, "%", null);
+                            while (columns.next()){
+                                System.out.println(columns.getString("COLUMN_NAME"));
+                            }
+                        }
+                    }
+                }
             }
         }
     }
