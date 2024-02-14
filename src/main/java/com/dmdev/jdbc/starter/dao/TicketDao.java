@@ -1,14 +1,15 @@
 package com.dmdev.jdbc.starter.dao;
 
+import com.dmdev.jdbc.starter.dto.TicketFilter;
 import com.dmdev.jdbc.starter.entity.TicketEntity;
 import com.dmdev.jdbc.starter.exeption.DaoException;
 import com.dmdev.jdbc.starter.until.ConnectionManager;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Vector;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.joining;
 
 public class TicketDao {
     private static final TicketDao INSTANCE = new TicketDao();
@@ -40,6 +41,39 @@ public class TicketDao {
             where id = ?
             """;
     public TicketDao() {
+    }
+    public List<TicketEntity> findAll(TicketFilter filter){
+        List<Object> parameters = new ArrayList<>();
+        List<String> whereSql = new ArrayList<>();
+        if(filter.seatNo()!=null){
+            whereSql.add("seat_no LIKE ?");
+            parameters.add("%" +filter.seatNo() + "%");
+        }
+        if(filter.passagerName()!=null){
+            whereSql.add("passager_name = ?");
+            parameters.add(filter.passagerName());
+        }
+        parameters.add(filter.limit());
+        parameters.add(filter.offset());
+        String where = whereSql.stream()
+                .collect(joining(" AND ", " WHERE ", " LIMIT ? OFFSET ? "));
+        String sql = FIND_ALL_SQL + where;
+        try(Connection connection = ConnectionManager.get();
+            PreparedStatement preparedStatement=connection.prepareStatement(sql)) {
+            for (int i = 0; i < parameters.size(); i++) {
+                preparedStatement.setObject(i+1, parameters.get(i));
+            }
+            System.out.println(preparedStatement);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<TicketEntity> ticketEntities = new ArrayList<>();
+            while (resultSet.next()){
+                ticketEntities.add(buildTicket(resultSet));
+            }
+            return ticketEntities;
+        }catch (SQLException e) {
+            throw new DaoException(e);
+        }
+
     }
     public List<TicketEntity> findAll(){
         try(Connection connection = ConnectionManager.get();

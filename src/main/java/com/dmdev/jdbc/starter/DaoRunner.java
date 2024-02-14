@@ -1,6 +1,7 @@
 package com.dmdev.jdbc.starter;
 
 import com.dmdev.jdbc.starter.dao.TicketDao;
+import com.dmdev.jdbc.starter.dto.TicketFilter;
 import com.dmdev.jdbc.starter.entity.TicketEntity;
 
 import javax.xml.stream.events.DTD;
@@ -10,6 +11,12 @@ import java.util.Optional;
 
 public class DaoRunner {
     public static void main(String[] args) {
+        TicketFilter filter = new TicketFilter(20,0,"Млечный Путь","A12");
+        List<TicketEntity> ticketEntities = TicketDao.getInstance().findAll(filter);
+        System.out.println(ticketEntities);
+    }
+
+    private static void listTicket() {
         List<TicketEntity> tickets = TicketDao.getInstance().findAll();
         System.out.println(tickets);
     }
