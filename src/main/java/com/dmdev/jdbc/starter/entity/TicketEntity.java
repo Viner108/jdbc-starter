@@ -8,13 +8,16 @@ public class TicketEntity {
     private String passengerName;
     private String seatNo;
     private BigDecimal cost;
-
     public TicketEntity(Long id, String passengerNo, String passengerName, String seatNo, BigDecimal cost) {
         this.id = id;
         this.passengerNo = passengerNo;
         this.passengerName = passengerName;
         this.seatNo = seatNo;
         this.cost = cost;
+
+    }
+
+    public TicketEntity() {
     }
 
     public Long getId() {
